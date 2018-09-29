@@ -131,7 +131,7 @@ import sys
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
-
+from tqdm import tqdm, trange
 FLAGS = None
 
 MAX_NUM_IMAGES_PER_CLASS = 2 ** 27 - 1  # ~134M
@@ -351,7 +351,7 @@ def create_bottleneck_file(bottleneck_path, image_lists, label_name, index,
                            decoded_image_tensor, resized_input_tensor,
                            bottleneck_tensor):
   """Create a single bottleneck file."""
-  tf.logging.info('Creating bottleneck at ' + bottleneck_path)
+  #tf.logging.info('Creating bottleneck at ' + bottleneck_path)
   image_path = get_image_path(image_lists, label_name, index,
                               image_dir, category)
   if not tf.gfile.Exists(image_path):
@@ -459,19 +459,20 @@ def cache_bottlenecks(sess, image_lists, image_dir, bottleneck_dir,
   """
   how_many_bottlenecks = 0
   ensure_dir_exists(bottleneck_dir)
-  for label_name, label_lists in image_lists.items():
-    for category in ['training', 'testing', 'validation']:
+  for label_name, label_lists in tqdm(image_lists.items()):
+    for category in tqdm(['training', 'testing', 'validation']):
       category_list = label_lists[category]
-      for index, unused_base_name in enumerate(category_list):
+      for index, unused_base_name in enumerate(tqdm(category_list)):
+        
         get_or_create_bottleneck(
             sess, image_lists, label_name, index, image_dir, category,
             bottleneck_dir, jpeg_data_tensor, decoded_image_tensor,
             resized_input_tensor, bottleneck_tensor, module_name)
 
         how_many_bottlenecks += 1
-        if how_many_bottlenecks % 100 == 0:
-          tf.logging.info(
-              str(how_many_bottlenecks) + ' bottleneck files created.')
+        #if how_many_bottlenecks % 100 == 0:
+          #tf.logging.info(
+          #    str(how_many_bottlenecks) + ' bottleneck files created.')
 
 
 def get_random_cached_bottlenecks(sess, image_lists, how_many, category,
@@ -1064,7 +1065,10 @@ def main(_):
     train_saver = tf.train.Saver()
 
     # Run the training for as many cycles as requested on the command line.
-    for i in range(FLAGS.how_many_training_steps):
+    print('\n\n\n\n')
+    print('_'*20)
+    print('Training Steps: ', FLAGS.how_many_training_steps)
+    for i in trange(FLAGS.how_many_training_steps):
       # Get a batch of input bottleneck values, either calculated fresh every
       # time with distortions applied, or from the cache stored on disk.
       if do_distort_images:
@@ -1090,7 +1094,7 @@ def main(_):
 
       # Every so often, print out how well the graph is training.
       is_last_step = (i + 1 == FLAGS.how_many_training_steps)
-      if (i % FLAGS.eval_step_interval) == 0 or is_last_step:
+      if is_last_step:
         train_accuracy, cross_entropy_value = sess.run(
             [evaluation_step, cross_entropy],
             feed_dict={bottleneck_input: train_bottlenecks,
