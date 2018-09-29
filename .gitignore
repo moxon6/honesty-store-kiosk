@@ -72,3 +72,6 @@ model_training/*.csv
 
 #firebase deploy
 .firebase/*.cache
+
+#vscode local configuration
+.vscode
