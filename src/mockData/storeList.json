@@ -1,0 +1,62 @@
+{
+    "item1": {
+      "id": "item1",
+      "name": "Jacob's",
+      "qualifier": "Mini Cheddars",
+      "image": "/static/media/mini-cheddars.1111111.svg",
+      "isMarketplace": false,
+      "count": 22,
+      "price": {
+        "total": 25,
+        "breakdown": {
+          "wholesaleCost": 22,
+          "serviceFee": 3,
+          "donation": 0,
+          "handlingFee": 0,
+          "creditCardFee": 0,
+          "VAT": 0
+        }
+      },
+      "sellerId": "sellerId"
+    },
+    "item2": {
+      "id": "item2",
+      "name": "Fanta Fruit Twist Zero",
+      "qualifier": null,
+      "image": "/static/media/misc-can.1111111.svg",
+      "isMarketplace": false,
+      "count": 1,
+      "price": {
+        "total": 54,
+        "breakdown": {
+          "wholesaleCost": 49,
+          "serviceFee": 5,
+          "donation": 0,
+          "handlingFee": 0,
+          "creditCardFee": 0,
+          "VAT": 0
+        }
+      },
+      "sellerId": "sellerId"
+    },
+    "item3": {
+      "id": "item3",
+      "name": "Skittles",
+      "qualifier": null,
+      "image": "/static/media/skittles.1111111.svg",
+      "isMarketplace": false,
+      "count": 0,
+      "price": {
+        "total": 32,
+        "breakdown": {
+          "wholesaleCost": 29,
+          "serviceFee": 3,
+          "donation": 0,
+          "handlingFee": 0,
+          "creditCardFee": 0,
+          "VAT": 0
+        }
+      },
+      "sellerId": "sellerId"
+    }
+}

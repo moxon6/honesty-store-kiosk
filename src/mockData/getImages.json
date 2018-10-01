@@ -1,0 +1,72 @@
+[
+  {
+    "id": "imageId0",
+    "label": "label0",
+    "trusted": false,
+    "timestamp": 0,
+    "url": "imageUrl0"
+  },
+  {
+    "id": "imageId1",
+    "label": "label1",
+    "trusted": false,
+    "timestamp": 100,
+    "url": "imageUrl1"
+  },
+  {
+    "id": "imageId2",
+    "label": "label2",
+    "trusted": false,
+    "timestamp": 200,
+    "url": "imageUrl2"
+  },
+  {
+    "id": "imageId3",
+    "label": "label3",
+    "trusted": false,
+    "timestamp": 300,
+    "url": "imageUrl3"
+  },
+  {
+    "id": "imageId4",
+    "label": "label4",
+    "trusted": false,
+    "timestamp": 400,
+    "url": "imageUrl4"
+  },
+  {
+    "id": "imageId5",
+    "label": "label5",
+    "trusted": false,
+    "timestamp": 500,
+    "url": "imageUrl5"
+  },
+  {
+    "id": "imageId6",
+    "label": "label6",
+    "trusted": false,
+    "timestamp": 600,
+    "url": "imageUrl6"
+  },
+  {
+    "id": "imageId7",
+    "label": "label7",
+    "trusted": false,
+    "timestamp": 700,
+    "url": "imageUrl7"
+  },
+  {
+    "id": "imageId8",
+    "label": "label8",
+    "trusted": false,
+    "timestamp": 800,
+    "url": "imageUrl8"
+  },
+  {
+    "id": "imageId9",
+    "label": "label9",
+    "trusted": false,
+    "timestamp": 900,
+    "url": "imageUrl9"
+  }
+]
