@@ -40,12 +40,7 @@ describe('Approval', () => {
   });
 
   it('should load store list and separate first and remaining images in initial state', () => {
-    expect(wrapper.state()).toEqual({
-      loading: false,
-      image: mockImages[0],
-      images: mockImages.slice(1),
-      storeList
-    });
+    expect(wrapper.state()).toEqual(initialState);
   });
 
   it('should give image id to previewPane data-id attribute', () => {
