@@ -131,6 +131,7 @@ import sys
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
+from tqdm import tqdm, trange
 
 FLAGS = None
 
@@ -310,125 +311,8 @@ def create_module_graph(module_spec):
   return graph, bottleneck_tensor, resized_input_tensor, wants_quantization
 
 
-def run_bottleneck_on_image(sess, image_data, image_data_tensor,
-                            decoded_image_tensor, resized_input_tensor,
-                            bottleneck_tensor):
-  """Runs inference on an image to extract the 'bottleneck' summary layer.
-
-  Args:
-    sess: Current active TensorFlow Session.
-    image_data: String of raw JPEG data.
-    image_data_tensor: Input data layer in the graph.
-    decoded_image_tensor: Output of initial image resizing and preprocessing.
-    resized_input_tensor: The input node of the recognition graph.
-    bottleneck_tensor: Layer before the final softmax.
-
-  Returns:
-    Numpy array of bottleneck values.
-  """
-  # First decode the JPEG image, resize it, and rescale the pixel values.
-  resized_input_values = sess.run(decoded_image_tensor,
-                                  {image_data_tensor: image_data})
-  # Then run it through the recognition network.
-  bottleneck_values = sess.run(bottleneck_tensor,
-                               {resized_input_tensor: resized_input_values})
-  bottleneck_values = np.squeeze(bottleneck_values)
-  return bottleneck_values
-
-
-def ensure_dir_exists(dir_name):
-  """Makes sure the folder exists on disk.
-
-  Args:
-    dir_name: Path string to the folder we want to create.
-  """
-  if not os.path.exists(dir_name):
-    os.makedirs(dir_name)
-
-
-def create_bottleneck_file(bottleneck_path, image_lists, label_name, index,
-                           image_dir, category, sess, jpeg_data_tensor,
-                           decoded_image_tensor, resized_input_tensor,
-                           bottleneck_tensor):
-  """Create a single bottleneck file."""
-  tf.logging.info('Creating bottleneck at ' + bottleneck_path)
-  image_path = get_image_path(image_lists, label_name, index,
-                              image_dir, category)
-  if not tf.gfile.Exists(image_path):
-    tf.logging.fatal('File does not exist %s', image_path)
-  image_data = tf.gfile.FastGFile(image_path, 'rb').read()
-  try:
-    bottleneck_values = run_bottleneck_on_image(
-        sess, image_data, jpeg_data_tensor, decoded_image_tensor,
-        resized_input_tensor, bottleneck_tensor)
-  except Exception as e:
-    raise RuntimeError('Error during processing file %s (%s)' % (image_path,
-                                                                 str(e)))
-  bottleneck_string = ','.join(str(x) for x in bottleneck_values)
-  with open(bottleneck_path, 'w') as bottleneck_file:
-    bottleneck_file.write(bottleneck_string)
-
-
-def get_or_create_bottleneck(sess, image_lists, label_name, index, image_dir,
-                             category, bottleneck_dir, jpeg_data_tensor,
-                             decoded_image_tensor, resized_input_tensor,
-                             bottleneck_tensor, module_name):
-  """Retrieves or calculates bottleneck values for an image.
-
-  If a cached version of the bottleneck data exists on-disk, return that,
-  otherwise calculate the data and save it to disk for future use.
-
-  Args:
-    sess: The current active TensorFlow Session.
-    image_lists: OrderedDict of training images for each label.
-    label_name: Label string we want to get an image for.
-    index: Integer offset of the image we want. This will be modulo-ed by the
-    available number of images for the label, so it can be arbitrarily large.
-    image_dir: Root folder string of the subfolders containing the training
-    images.
-    category: Name string of which set to pull images from - training, testing,
-    or validation.
-    bottleneck_dir: Folder string holding cached files of bottleneck values.
-    jpeg_data_tensor: The tensor to feed loaded jpeg data into.
-    decoded_image_tensor: The output of decoding and resizing the image.
-    resized_input_tensor: The input node of the recognition graph.
-    bottleneck_tensor: The output tensor for the bottleneck values.
-    module_name: The name of the image module being used.
-
-  Returns:
-    Numpy array of values produced by the bottleneck layer for the image.
-  """
-  label_lists = image_lists[label_name]
-  sub_dir = label_lists['dir']
-  sub_dir_path = os.path.join(bottleneck_dir, sub_dir)
-  ensure_dir_exists(sub_dir_path)
-  bottleneck_path = get_bottleneck_path(image_lists, label_name, index,
-                                        bottleneck_dir, category, module_name)
-  if not os.path.exists(bottleneck_path):
-    create_bottleneck_file(bottleneck_path, image_lists, label_name, index,
-                           image_dir, category, sess, jpeg_data_tensor,
-                           decoded_image_tensor, resized_input_tensor,
-                           bottleneck_tensor)
-  with open(bottleneck_path, 'r') as bottleneck_file:
-    bottleneck_string = bottleneck_file.read()
-  did_hit_error = False
-  try:
-    bottleneck_values = [float(x) for x in bottleneck_string.split(',')]
-  except ValueError:
-    tf.logging.warning('Invalid float found, recreating bottleneck')
-    did_hit_error = True
-  if did_hit_error:
-    create_bottleneck_file(bottleneck_path, image_lists, label_name, index,
-                           image_dir, category, sess, jpeg_data_tensor,
-                           decoded_image_tensor, resized_input_tensor,
-                           bottleneck_tensor)
-    with open(bottleneck_path, 'r') as bottleneck_file:
-      bottleneck_string = bottleneck_file.read()
-    # Allow exceptions to propagate here, since they shouldn't happen after a
-    # fresh creation
-    bottleneck_values = [float(x) for x in bottleneck_string.split(',')]
-  return bottleneck_values
-
+def dummy__get_or_create_bottlenecks(*args):
+    print(args)
 
 def cache_bottlenecks(sess, image_lists, image_dir, bottleneck_dir,
                       jpeg_data_tensor, decoded_image_tensor,
@@ -459,18 +343,19 @@ def cache_bottlenecks(sess, image_lists, image_dir, bottleneck_dir,
   """
   how_many_bottlenecks = 0
   ensure_dir_exists(bottleneck_dir)
-  for label_name, label_lists in image_lists.items():
-    for category in ['training', 'testing', 'validation']:
+  for label_name, label_lists in tqdm(image_lists.items()):
+    for category in tqdm(['training', 'testing', 'validation']):
       category_list = label_lists[category]
-      for index, unused_base_name in enumerate(category_list):
-        get_or_create_bottleneck(
+      for index, unused_base_name in enumerate(tqdm(category_list)):
+
+        dummy__get_or_create_bottlenecks(
             sess, image_lists, label_name, index, image_dir, category,
             bottleneck_dir, jpeg_data_tensor, decoded_image_tensor,
             resized_input_tensor, bottleneck_tensor, module_name)
 
         how_many_bottlenecks += 1
         if how_many_bottlenecks % 100 == 0:
-          tf.logging.info(
+          tqdm.write(
               str(how_many_bottlenecks) + ' bottleneck files created.')
 
 
@@ -1064,7 +949,7 @@ def main(_):
     train_saver = tf.train.Saver()
 
     # Run the training for as many cycles as requested on the command line.
-    for i in range(FLAGS.how_many_training_steps):
+    for i in trange(FLAGS.how_many_training_steps):
       # Get a batch of input bottleneck values, either calculated fresh every
       # time with distortions applied, or from the cache stored on disk.
       if do_distort_images:

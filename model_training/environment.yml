@@ -1,0 +1,73 @@
+name: honesty-store
+channels:
+- conda-forge
+- defaults
+dependencies:
+- absl-py=0.5.0=py_0
+- astor=0.7.1=py_0
+- blas=1.1=openblas
+- ca-certificates=2018.8.24=ha4d7672_0
+- gast=0.2.0=py_0
+- grpcio=1.14.1=py36he089993_0
+- libflang=5.0.0=vc14_20180208
+- libprotobuf=3.6.0=h1a1b453_0
+- llvm-meta=5.0.0=0
+- mock=2.0.0=py36_0
+- numpy=1.15.2=py36_blas_openblash8d851b4_0
+- openblas=0.2.20=vc14_8
+- openmp=5.0.0=vc14_1
+- openssl=1.0.2o=vc14_0
+- pbr=4.2.0=py_0
+- protobuf=3.6.0=py36he025d50_0
+- tensorboard=1.10.0=py36_0
+- tensorflow=1.10.0=py36_0
+- tensorflow-hub=0.1.1=py_0
+- termcolor=1.1.0=py_2
+- tqdm=4.26.0=py_0
+- zlib=1.2.11=vc14_0
+- astroid=1.5.3=py36_0
+- backports=1.0=py36_0
+- backports.weakref=1.0rc1=py36_0
+- bleach=1.5.0=py36_0
+- certifi=2016.2.28=py36_0
+- colorama=0.3.9=py36_0
+- decorator=4.1.2=py36_0
+- html5lib=0.9999999=py36_0
+- ipython=6.1.0=py36_0
+- ipython_genutils=0.2.0=py36_0
+- isort=4.2.15=py36_0
+- jedi=0.10.2=py36_2
+- lazy-object-proxy=1.3.1=py36_0
+- markdown=2.6.9=py36_0
+- mkl=2017.0.3=0
+- path.py=10.3.1=py36_0
+- pickleshare=0.7.4=py36_0
+- pip=9.0.1=py36_1
+- prompt_toolkit=1.0.15=py36_0
+- pygments=2.2.0=py36_0
+- pylint=1.7.2=py36_0
+- python=3.6.2=0
+- setuptools=36.4.0=py36_1
+- simplegeneric=0.8.1=py36_1
+- singledispatch=3.4.0.3=py36_0
+- six=1.10.0=py36_0
+- traitlets=4.3.2=py36_0
+- vc=14=0
+- vs2015_runtime=14.0.25420=0
+- wcwidth=0.1.7=py36_0
+- werkzeug=0.12.2=py36_0
+- wheel=0.29.0=py36_0
+- wincertstore=0.2=py36_0
+- wrapt=1.10.11=py36_0
+- pip:
+  - h5py==2.8.0
+  - ipython-genutils==0.2.0
+  - keras==2.2.2
+  - keras-applications==1.0.4
+  - keras-preprocessing==1.0.2
+  - prompt-toolkit==1.0.15
+  - pyyaml==3.13
+  - scipy==1.1.0
+  - tensorflowjs==0.6.2
+prefix: C:\Users\mmoxon\AppData\Local\Continuum\Anaconda3\envs\honesty-store
+
